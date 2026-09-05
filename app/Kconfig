@@ -1,0 +1,57 @@
+choice
+    prompt "LED blink speed"
+    default BLINK_SLEEP_1000MS
+
+config BLINK_SLEEP_250MS
+    bool "Fast (250ms)"
+
+config BLINK_SLEEP_1000MS
+    bool "Normal (1s)"
+
+config BLINK_SLEEP_2000MS
+    bool "Slow (2s)"
+
+endchoice
+
+config BLINK_SLEEP_TIME_MS 
+    int # <-- No prompt = hidden
+    default 250 if BLINK_SLEEP_250MS
+    default 1000 if BLINK_SLEEP_1000MS
+    default 2000 if BLINK_SLEEP_2000MS
+    default 0
+    help
+        help string can be multiline
+        Like this one.
+
+config LED_BRIGHTNESS
+    int "LED brightness (0-100)"
+    depends on LED_SUBSYSTEM
+    range 0 100
+    default 100
+
+menu "Example configs"
+    # visible if SOME_OTHER_CONFIG
+
+config EXAMPLE_CONFIG_PERCENTAGE
+    int "Example config percentage"
+    range 0 100
+    default 0
+
+if SOME_CONFIG
+config EXAMPLE_CONDITIONAL_CONFIG
+    int "Some config"
+endif # SOME_CONFIG
+
+endmenu
+
+menuconfig EXAMPLE_MENU_CONFIG
+    bool "Example menu config enable"
+    default y
+
+if SOME_CONFIG
+config EXAMPLE_ANOTHER_CONDITION_CONFIG
+    bool "Example of another condition config enable"
+    default n
+endif # SOME_CONFIG
+
+source "Kconfig.zephyr" # <-- Needed to load zephyr default configs
