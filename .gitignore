@@ -7,3 +7,6 @@ deps
 
 # clang
 .cache
+
+# other
+.DS_Store
