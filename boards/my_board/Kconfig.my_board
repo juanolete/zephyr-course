@@ -1,0 +1,2 @@
+config BOARD_MY_BOARD
+	select SOC_NRF51822_QFAC
