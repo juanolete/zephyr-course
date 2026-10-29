@@ -3,4 +3,9 @@
 	aliases {
 		app-led = &green_led;
 	};
+
+	my_led: my_led {
+		compatible = "my,led";
+		status = "okay";
+	};
 };

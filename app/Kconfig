@@ -72,3 +72,4 @@ endif # LED_SUBSYSTEM
 
 
 source "Kconfig.zephyr" # <-- Needed to load zephyr default configs
+rsource "drivers/my_led/Kconfig"
