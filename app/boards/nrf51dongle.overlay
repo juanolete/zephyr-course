@@ -1,0 +1,11 @@
+
+/ {
+	aliases {
+		driver-led = &led0_red;
+	};
+
+	my_led: my_led {
+		compatible = "my,led";
+		status = "okay";
+	};
+};
