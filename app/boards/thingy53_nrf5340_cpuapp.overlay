@@ -1,4 +1,3 @@
-
 / {
 	aliases {
 		driver-led = &green_led;

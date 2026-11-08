@@ -13,13 +13,13 @@ struct my_led_data {
 };
 
 static int my_led_init(const struct device *dev) {
-	LOG_INF("LED driver initialized!");
+	LOG_DBG("LED driver initialized!");
 	
   	return 0;
 }
 
 int my_led_turn_on(const struct device *dev, enum sensor_channel chan) {
-  	LOG_INF("My LED turn ON");
+  	LOG_DBG("My LED turn ON");
 
 	struct my_led_data *data = dev->data;
 	return gpio_pin_set_dt(data->led, 1);
@@ -27,14 +27,14 @@ int my_led_turn_on(const struct device *dev, enum sensor_channel chan) {
 
 int my_led_turn_off(const struct device *dev, enum sensor_channel chan,
                         struct sensor_value *val) {
-  	LOG_INF("My LED turn OFF");
+  	LOG_DBG("My LED turn OFF");
 	
 	struct my_led_data *data = dev->data;
 	return gpio_pin_set_dt(data->led, 0);
 };
 
 int my_led_set_gpio(const struct device *dev, const struct gpio_dt_spec *led) {
-	LOG_INF("My LED set GPIO");
+	LOG_DBG("My LED set GPIO");
 
 	struct my_led_data *data = dev->data;
 	data->led = led;
