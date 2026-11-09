@@ -40,7 +40,7 @@ static int my_driver_info_handler(const struct shell *sh, size_t argc, char **ar
     return 0;
 }
 
-/* Create subcommands array for "sensorroot" */
+/* Create subcommands array for "sensor" */
 SHELL_STATIC_SUBCMD_SET_CREATE(my_led_subcommands,
     SHELL_CMD_ARG(fetch, NULL, "Turn ON LED.", my_driver_fetch_handler, 1, 0),
     SHELL_CMD_ARG(read, NULL, "Turn OFF LED.", my_driver_channel_get_handler, 1, 0),
@@ -48,5 +48,5 @@ SHELL_STATIC_SUBCMD_SET_CREATE(my_led_subcommands,
     SHELL_SUBCMD_SET_END
 );
 
-/* Register toor command "sensorroot" with subcommands */
-SHELL_CMD_REGISTER(sensorroot, &my_led_subcommands, "My LED commands.", NULL);
+/* Register toor command "sensor" with subcommands */
+SHELL_CMD_REGISTER(sensor, &my_led_subcommands, "My LED commands.", NULL);
