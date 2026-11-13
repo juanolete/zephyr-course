@@ -13,18 +13,18 @@ const struct gpio_dt_spec led_red = GPIO_DT_SPEC_GET(LED_RED, gpios);
 const struct gpio_dt_spec led_blue = GPIO_DT_SPEC_GET(LED_BLUE, gpios);
 
 static int my_driver_fetch_handler(const struct shell *sh, size_t argc, char **argv) {
-    shell_info(sh, "My LED Turn ON");
     const struct device *led_driver = shell_device_get_binding("my_led");
     if (led_driver == NULL) {
         shell_error(sh, "Device my_led not found.");
         return 1;
     }
     
-    return sensor_sample_fetch_chan(led_driver, SENSOR_CHAN_AMBIENT_TEMP);
+    int res = sensor_sample_fetch_chan(led_driver, SENSOR_CHAN_AMBIENT_TEMP);
+    shell_info(sh, "My LED Turn ON. Result=%d", res);
+    return res;
 }
 
 static int my_driver_channel_get_handler(const struct shell *sh, size_t argc, char **argv) {
-    shell_info(sh, "My LED Turn OFF");
     const struct device *led_driver = shell_device_get_binding("my_led");
     if (led_driver == NULL) {
         shell_error(sh, "Device my_led not found.");
@@ -32,7 +32,9 @@ static int my_driver_channel_get_handler(const struct shell *sh, size_t argc, ch
     }
     
     struct sensor_value val;
-    return sensor_channel_get(led_driver, SENSOR_CHAN_AMBIENT_TEMP, &val);
+    int res = sensor_channel_get(led_driver, SENSOR_CHAN_AMBIENT_TEMP, &val); 
+    shell_info(sh, "My LED Turn OFF. Result=%d", res);
+    return res;
 }
 
 static int my_driver_info_handler(const struct shell *sh, size_t argc, char **argv) {
@@ -43,7 +45,7 @@ static int my_driver_info_handler(const struct shell *sh, size_t argc, char **ar
     }
     
     shell_info(sh, "My LED driver Info. Name=%s, is_ready=%s", 
-				"my_led", device_is_ready(led_driver) ? "true" : "false");
+			led_driver->name, device_is_ready(led_driver) ? "true" : "false");
     return 0;
 }
 
