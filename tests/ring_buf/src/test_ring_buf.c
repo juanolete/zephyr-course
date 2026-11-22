@@ -43,11 +43,12 @@ ZTEST(ring_buf_init, test_fresh_state)
 
 ZTEST(ring_buf_init, test_reinit_clears_state)
 {
-	/* TODO(l8-task1): Push a value, call rb_init(4) again, then
-	 * verify the buffer is empty and count is 0.
-	 * See TEST_SPEC.md "Suite ring_buf_init" #2.
-	 */
-	ztest_test_skip();
+	zassume_ok(rb_push(99), "Can't push into buffer");
+   zassert_equal(rb_count(), 1, "Fresh buffer count must be 1 after pushing");
+
+   zassert_ok(rb_init(4), "rb_init(4) must succeed");
+   zassert_true(rb_is_empty(), "Fresh buffer must be empty");
+	zassert_equal(rb_count(), 0, "Fresh buffer count must be 0");
 }
 
 /*
@@ -61,28 +62,45 @@ ZTEST_SUITE(ring_buf_push_pop, NULL, NULL, before, NULL, NULL);
 
 ZTEST(ring_buf_push_pop, test_single_push_pop)
 {
-	/* TODO(l8-task1): rb_push(42), rb_pop(&v) -> v == 42, buffer empty after.
-	 * See TEST_SPEC.md "Suite ring_buf_push_pop" #1.
-	 */
-	ztest_test_skip();
+   zassert_ok(rb_push(42), "Can't push into buffer");
+
+   int v = 0;
+   zassert_ok(rb_pop(&v), "rb_pop() must succeed");
+   zassert_equal(v, 42, "Value must be 42");
+
+   zassert_true(rb_is_empty(), "Fresh buffer must be empty");
 }
 
 ZTEST(ring_buf_push_pop, test_fifo_order)
 {
-	/* TODO(l8-task1): rb_push(1), rb_push(2), rb_push(3); pop three times
-	 * and verify the values come out as 1, 2, 3 in that order.
-	 * See TEST_SPEC.md "Suite ring_buf_push_pop" #2.
-	 */
-	ztest_test_skip();
+   zassert_ok(rb_push(1), "Can't push 1 into buffer");
+   zassert_ok(rb_push(2), "Can't push 2 into buffer");
+   zassert_ok(rb_push(3), "Can't push 3 into buffer");
+
+   int v = 0;
+   zassert_ok(rb_pop(&v), "rb_pop() must succeed");
+   zassert_equal(v, 1, "Value must be 1");
+
+   zassert_ok(rb_pop(&v), "rb_pop() must succeed");
+   zassert_equal(v, 2, "Value must be 2");
+
+   zassert_ok(rb_pop(&v), "rb_pop() must succeed");
+   zassert_equal(v, 3, "Value must be 3");
+
+   zassert_true(rb_is_empty(), "Buffer must be empty after rb_pop()");
 }
 
 ZTEST(ring_buf_push_pop, test_push_full_returns_enospc)
 {
-	/* TODO(l8-task1): Fill the buffer to its capacity of 4, then push
-	 * one more value -> -ENOSPC.
-	 * See TEST_SPEC.md "Suite ring_buf_push_pop" #3.
-	 */
-	ztest_test_skip();
+   zassume_ok(rb_push(1), "Can't push 1 into buffer");
+   zassume_ok(rb_push(2), "Can't push 2 into buffer");
+   zassume_ok(rb_push(3), "Can't push 3 into buffer");
+   zassume_ok(rb_push(4), "Can't push 4 into buffer");
+
+   zassert_true(rb_is_full(), "Buffer must be full");
+   zassert_equal(rb_push(99), -ENOSPC);
+
+   zassert_equal(rb_count(), 4, "Buffer size must be 4");
 }
 
 /*
@@ -96,25 +114,29 @@ ZTEST_SUITE(ring_buf_boundaries, NULL, NULL, before, NULL, NULL);
 
 ZTEST(ring_buf_boundaries, test_peek_does_not_consume)
 {
-	/* TODO(l8-task1): rb_push(7); rb_peek(&v) -> v == 7; rb_peek(&v) again
-	 * -> v == 7; rb_count() still == 1.
-	 * See TEST_SPEC.md "Suite ring_buf_boundaries" #1.
-	 */
-	ztest_test_skip();
+   zassume_ok(rb_push(7), "rb_push(7) must succeed");
+
+   int v = 0;
+   zassert_ok(rb_peek(&v), "rb_peek() must succeed");
+   zassert_equal(v, 7, "Value peek must be 7");
+   zassert_ok(rb_peek(&v), "rb_peek() must succeed");
+   zassert_equal(v, 7, "Value peek must be 7");
+   
+   zassert_equal(rb_count(), 1, "Buffer size must be 1");
 }
 
 ZTEST(ring_buf_boundaries, test_pop_null_returns_einval)
 {
-	/* TODO(l8-task1): rb_pop(NULL) -> -EINVAL.
-	 * See TEST_SPEC.md "Suite ring_buf_boundaries" #2.
-	 */
-	ztest_test_skip();
+   zassert_equal(rb_pop(NULL), -EINVAL, "rb_pop(NULL) must fail");
 }
 
 ZTEST(ring_buf_boundaries, test_is_full_after_fill)
 {
-	/* TODO(l8-task1): push 4 values -> rb_is_full() == true, rb_count() == 4.
-	 * See TEST_SPEC.md "Suite ring_buf_boundaries" #3.
-	 */
-	ztest_test_skip();
+   zassume_ok(rb_push(1), "Can't push 1 into buffer");
+   zassume_ok(rb_push(2), "Can't push 2 into buffer");
+   zassume_ok(rb_push(3), "Can't push 3 into buffer");
+   zassume_ok(rb_push(4), "Can't push 4 into buffer");
+
+   zassert_true(rb_is_full(), "Buffer must be full");
+   zassert_equal(rb_count(), 4, "Buffer size must be 4");
 }

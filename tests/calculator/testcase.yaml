@@ -1,3 +1,12 @@
+# To run UT in simulation:
+# west twister -T tests/calculator -p qemu_x86
+
+# For UT coverage in simulation:
+# west twister -T tests/calculator -p qemu_x86 --coverage --coverage-tool gcovr --coverage-basedir app/modules/calculator
+
+# To run test in hardware:
+# west twister -T tests/calculator --device-testing --device-serial /dev/tty.usbmodem0006803374481 --device-serial-baud 115200 -p nrf51dongle -v
+
 common:
   tags:
     - unit
@@ -7,16 +16,20 @@ common:
 tests:
   # Default scenario: shuffled test order exposes hidden ordering dependencies
   example.unit.calculator:
-    platform_allow: native_sim
+    platform_allow: 
+     - native_sim
+     - qemu_x86
     timeout: 60
 
   # Deterministic scenario: fixed order for live demos or failure bisection.
   example.unit.calculator.ordered:
-    platform_allow: native_sim
+    platform_allow: 
+     - native_sim
+     - qemu_x86
     timeout: 60
     extra_args: CONFIG_ZTEST_SHUFFLE=n
 
   # Hardware scenario: same unit tests running on an nRF54L15DK.
   example.unit.calculator.hw:
-    platform_allow: nrf54l15dk/nrf54l15/cpuapp
+    platform_allow: nrf51dongle
     timeout: 120
